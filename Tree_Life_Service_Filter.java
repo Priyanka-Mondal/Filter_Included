@@ -96,6 +96,10 @@ public class Tree_Life_Service_Filter {
 			  {
 				  ret = kk;
 			  }
+			  else if(Service.get(kk).state.equals("SERVICE-CONNECT")  && Service.get(kk).component.equals(Service.get(taskid).component) && Service.get(kk).createService == Service.get(taskid).createService)
+			  {
+				  ret = kk;
+			  }
 		  }
 	  }
 	  return ret;
@@ -315,6 +319,8 @@ public int reverseStackWithCheckingPriority(Stack<Edge> s, Stack<Edge> Backup , 
 	  int uniqueCycle = CheckCycleList(s2);
 	  if(uniqueCycle == 1)
 	  {
+		  fw.write("\nCYCLE NUMBER:"+(globalCycles+1)); 
+		  fw.write("\n-----------------");
 		  System.out.println("CYCLE NUMBER:"+(globalCycles+1));  
 		  System.out.println("PRIORITY:"+ret);
 		  fw.write("\nPRIORITY:"+ret);
@@ -595,6 +601,7 @@ public void clearState(int i)
 	RecNode.clear();
 	outside.clear();
 	Service.clear();
+	Service_Pool.clear();
 	createService = 0;
 	bindService = 0;
 	gSn = 88888;
@@ -755,7 +762,7 @@ public void markCalls(String concat) throws IOException
 				  else if(line.contains("STOP-SERVICE"))
 				  {
 					  LinkedHashSet<Integer> temp = new LinkedHashSet<Integer>(); 
-					  //temp.add(gSn++);
+					  temp.add(++gSn);
 					  serviceData sd = new serviceData(component,state,createService,-1,serviceargs,-1,temp);
 					  Service.put(currentTask.get(tid), sd);
 					  lv.id = sd.createService;
@@ -1516,6 +1523,7 @@ public  void phaseCheck(int number , String args0) throws IOException
 							{
 								
 								System.out.println(cycles+"-----------------CYCLE for RELEASE_ACQUIRE EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
+								fw.write("\n");
 								fw.write("\n"+cycles+"-----------------CYCLE for RELEASE_ACQUIRE EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
 								System.out.println("BLAME EDGE:"+"[("+state.U.get(lockObj).node+","+state.U.get(lockObj).line+"),("+nodeId+","+lineNum+")]");
 								System.out.println("BLAME TRANSACTION: "+nodeId);
@@ -2446,6 +2454,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 									System.out.println(cycles+"-----------------CYCLE for THREADEXIT-JOIN EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
 									System.out.println("BLAME EDGE:"+"[("+state.F.get(cTid).node+","+state.F.get(cTid).line+"),("+nodeId+","+lineNum+")]");
 									System.out.println("BLAME TRANSACTION: "+nodeId);
+									fw.write("\n");
 									fw.write(cycles+"-----------------CYCLE for THREADEXIT-JOIN EDGE!! ");
 									fw.write("\nBLAME EDGE:"+"[("+state.F.get(cTid).node+","+state.F.get(cTid).line+"),("+nodeId+","+lineNum+")]");
 									fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -2519,6 +2528,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 									System.out.println(cycles+"-----------------CYCLE for THREADEXIT-JOIN EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
 									System.out.println("BLAME EDGE:"+"[("+state.F.get(cTid).node+","+state.F.get(cTid).line+"),("+nodeId+","+lineNum+")]");
 									System.out.println("BLAME TRANSACTION: "+nodeId);
+									fw.write("\n");
 									fw.write(cycles+"-----------------CYCLE for THREADEXIT-JOIN EDGE!! ");
 									fw.write("\nBLAME EDGE:"+"[("+state.F.get(cTid).node+","+state.F.get(cTid).line+"),("+nodeId+","+lineNum+")]");
 									fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -2664,6 +2674,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 								System.out.println(cycles+"-----------------CYCLE for RELEASE_ACQUIRE EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
 								System.out.println("BLAME EDGE:"+"[("+state.U.get(lockObj).node+","+state.U.get(lockObj).line+"),("+nodeId+","+lineNum+")]");
 								System.out.println("BLAME TRANSACTION: "+nodeId);
+								fw.write("\n");
 								fw.write(cycles+"-----------------CYCLE for RELEASE_ACQUIRE EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
 								fw.write("\nBLAME EDGE:"+"[("+state.U.get(lockObj).node+","+state.U.get(lockObj).line+"),("+nodeId+","+lineNum+")]");
 								fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -2733,6 +2744,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 								System.out.println(cycles+"-----------------CYCLE for RELEASE_ACQUIRE EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
 								System.out.println("BLAME EDGE:"+"[("+state.U.get(lockObj).node+","+state.U.get(lockObj).line+"),("+nodeId+","+lineNum+")]");
 								System.out.println("BLAME TRANSACTION: "+nodeId);
+								fw.write("\n");
 								fw.write(cycles+"-----------------CYCLE for RELEASE_ACQUIRE EDGE!! "/*+state.U.get(lockObj).node+" "+nodeId*/);
 								fw.write("\nBLAME EDGE:"+"[("+state.U.get(lockObj).node+","+state.U.get(lockObj).line+"),("+nodeId+","+lineNum+")]");
 								fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -2963,6 +2975,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 									System.out.println(cycles+"----------------------CYCLE for WRITE-READ EDGE!! "/*+objId+" field:"+fieldId+" (src:"+state.W.get(k).node+","+state.W.get(k).line+") (dest:"+nodeId+","+lineNum+")"*/);
 									System.out.println("BLAME EDGE:"+"[("+state.W.get(k).node+","+state.W.get(k).line+"),("+nodeId+","+lineNum+")]");
 									System.out.println("BLAME TRANSACTION: "+nodeId);
+									fw.write("\n");
 									fw.write(cycles+"----------------------CYCLE for WRITE-READ EDGE!! ");
 									fw.write("\nBLAME EDGE:"+"[("+state.W.get(k).node+","+state.W.get(k).line+"),("+nodeId+","+lineNum+")]");
 									fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -3038,6 +3051,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 								System.out.println(cycles+"----------------------CYCLE for WRITE-READ EDGE!! "/*+objId+" field:"+fieldId+" (src:"+state.W.get(k).node+","+state.W.get(k).line+") (dest:"+nodeId+","+lineNum+")"*/);
 								System.out.println("BLAME EDGE:"+"[("+state.W.get(k).node+","+state.W.get(k).line+"),("+nodeId+","+lineNum+")]");
 								System.out.println("BLAME TRANSACTION: "+nodeId);
+								fw.write("\n");
 								fw.write(cycles+"----------------------CYCLE for WRITE-READ EDGE!! ");
 								fw.write("\nBLAME EDGE:"+"[("+state.W.get(k).node+","+state.W.get(k).line+"),("+nodeId+","+lineNum+")]");
 								fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -3131,7 +3145,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 							cycles++;
 							if(CP == 1)
 							{
-								
+								fw.write("\n");
 								System.out.println(cycles+"--------------------CYCLE for WRITE WRITE EDGE!! "/*+objId+" "+fieldId+" src:"+state.W.get(k).node+" dest:"+nodeId*/);
 								System.out.println("BLAME EDGE:"+"[("+state.W.get(k).node+","+state.W.get(k).line+"),("+nodeId+","+lineNum+")]");
 								System.out.println("BLAME TRANSACTION: "+nodeId);
@@ -3219,6 +3233,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 								System.out.println(cycles+"--------------------CYCLE for WRITE WRITE EDGE!! "/*+objId+" "+fieldId+" src:"+state.W.get(k).node+" dest:"+nodeId*/);
 								System.out.println("BLAME EDGE:"+"[("+state.W.get(k).node+","+state.W.get(k).line+"),("+nodeId+","+lineNum+")]");
 								System.out.println("BLAME TRANSACTION: "+nodeId);
+								fw.write("\n");
 								fw.write(cycles+"--------------------CYCLE for WRITE WRITE EDGE!! ");
 								fw.write("\nBLAME EDGE:"+"[("+state.W.get(k).node+","+state.W.get(k).line+"),("+nodeId+","+lineNum+")]");
 								fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -3304,6 +3319,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 											System.out.println(cycles+"----------------------CYCLE for READ-WRITE EDGE!!  "/*+objId+" "+fieldId+" src:"+state.R.get(r).node+" dest:"+nodeId*/);
 											System.out.println("BLAME EDGE:"+"[("+state.R.get(r).node+","+state.R.get(r).line+"),("+nodeId+","+lineNum+")]");
 											System.out.println("BLAME TRANSACTION: "+nodeId);
+											fw.write("\n");
 											fw.write(cycles+"----------------------CYCLE for READ-WRITE EDGE!!  ");
 											fw.write("\nBLAME EDGE:"+"[("+state.R.get(r).node+","+state.R.get(r).line+"),("+nodeId+","+lineNum+")]");
 											fw.write("\nBLAME TRANSACTION: "+nodeId);
@@ -3374,6 +3390,7 @@ public void checkLifecycles(int number, String concat,String args0) throws IOExc
 										System.out.println(cycles+"----------------------CYCLE for READ-WRITE EDGE!!  "/*+objId+" "+fieldId+" src:"+state.R.get(r).node+" dest:"+nodeId*/);
 										System.out.println("BLAME EDGE:"+"[("+state.R.get(r).node+","+state.R.get(r).line+"),("+nodeId+","+lineNum+")]");
 										System.out.println("BLAME TRANSACTION: "+nodeId);
+										fw.write("\n");
 										fw.write(cycles+"----------------------CYCLE for READ-WRITE EDGE!!  ");
 										fw.write("\nBLAME EDGE:"+"[("+state.R.get(r).node+","+state.R.get(r).line+"),("+nodeId+","+lineNum+")]");
 										fw.write("\nBLAME TRANSACTION: "+nodeId);
